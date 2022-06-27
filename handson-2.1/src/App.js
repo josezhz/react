@@ -1,6 +1,6 @@
 import React from 'react';
-import BorderedImageFrame from './BorderedImageFrame';
-import SumOfTwo from './SumOfTwo';
+import BorderedImageFrame from './components/BorderedImageFrame';
+import SumOfTwo from './components/SumOfTwo';
 
 function App() {
   return (
