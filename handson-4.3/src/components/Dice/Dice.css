@@ -1,0 +1,12 @@
+#root>div {
+    font-size: 100px;
+    font-weight: 700;
+    height: 200px;
+    width: 200px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 10px solid black;
+    color: blue;
+}
