@@ -12,10 +12,16 @@ export default class Dice extends React.Component {
         })
     }
 
+    color = () => {
+        if (this.state.number === 1) {return "red"}
+        else if (this.state.number === 6) {return "green"}
+        else {return "black"}
+    }
+
     render() {
         return (
             <React.Fragment>
-                <div onClick={this.roll}>{this.state.number}</div>
+                <div onClick={this.roll} style={{color: this.color()}}>{this.state.number}</div>
             </React.Fragment>
         )
     }
