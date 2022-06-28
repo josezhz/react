@@ -5,7 +5,8 @@ export default class ContactUsForm extends React.Component {
         firstName: '',
         lastName: '',
         enquiry: '',
-        country: 'singapore'
+        country: 'singapore',
+        contactOptions: []
     }
 
     updateFormField = (event) => {
@@ -14,20 +15,17 @@ export default class ContactUsForm extends React.Component {
         })
     }
 
-    updateFruits = (event) => {
-        let currentFruits = this.state[event.target.name]
-        let modifiedFruits = currentFruits
-
-        if (!currentFruits.includes(event.target.value)) {
-            modifiedFruits.push(event.target.value)
+    updateContactOptions = (event) => {
+        let contactOptionsCopy = [...this.state.contactOptions]
+        if (!contactOptionsCopy.includes(event.target.value)) {
+            contactOptionsCopy.push(event.target.value)
         } else {
-            modifiedFruits = currentFruits.filter((fruit) => {
-                return fruit !== event.target.value
+            contactOptionsCopy = contactOptionsCopy.filter((contactOption) => {
+                return contactOption !== event.target.value
             })
         }
-
         this.setState({
-            [event.target.name]: modifiedFruits
+            [event.target.name]: contactOptionsCopy
         })
     }
 
@@ -55,6 +53,24 @@ export default class ContactUsForm extends React.Component {
                         <option value="malaysia">Malaysia</option>
                         <option value="thailand">Thailand</option>
                     </select>
+                </div>
+                <div>
+                    <label>Contact Options: </label>
+                    <input name="contactOptions" 
+                           type="checkbox" 
+                           value="email" 
+                           checked={this.state.contactOptions.includes('email')}
+                           onChange={this.updateContactOptions} />Email
+                    <input name="contactOptions" 
+                           type="checkbox" 
+                           value="phoneNumber" 
+                           checked={this.state.contactOptions.includes('phoneNumber')}
+                           onChange={this.updateContactOptions} />Phone Number
+                    <input name="contactOptions" 
+                           type="checkbox" 
+                           value="slowMail" 
+                           checked={this.state.contactOptions.includes('slowMail')}
+                           onChange={this.updateContactOptions} />Slow Mail
                 </div>
                 <button>Submit</button>
             </React.Fragment>
