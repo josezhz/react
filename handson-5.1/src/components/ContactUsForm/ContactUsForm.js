@@ -16,13 +16,12 @@ export default class ContactUsForm extends React.Component {
     }
 
     updateContactOptions = (event) => {
-        let contactOptionsCopy = [...this.state.contactOptions]
+        let contactOptionsCopy = this.state.contactOptions.slice()
         if (!contactOptionsCopy.includes(event.target.value)) {
             contactOptionsCopy.push(event.target.value)
         } else {
-            contactOptionsCopy = contactOptionsCopy.filter((contactOption) => {
-                return contactOption !== event.target.value
-            })
+            let indexToRemove = this.state.contactOptions.indexOf(event.target.value)
+            contactOptionsCopy.splice(indexToRemove, 1)
         }
         this.setState({
             [event.target.name]: contactOptionsCopy
@@ -74,23 +73,23 @@ export default class ContactUsForm extends React.Component {
                         onChange={this.updateContactOptions} />Email
                     <input name="contactOptions"
                         type="checkbox"
-                        value="phoneNumber"
-                        checked={this.state.contactOptions.includes('phoneNumber')}
+                        value="phone-number"
+                        checked={this.state.contactOptions.includes('phone-number')}
                         onChange={this.updateContactOptions} />Phone Number
                     <input name="contactOptions"
                         type="checkbox"
-                        value="slowMail"
-                        checked={this.state.contactOptions.includes('slowMail')}
+                        value="slow-mail"
+                        checked={this.state.contactOptions.includes('slow-mail')}
                         onChange={this.updateContactOptions} />Slow Mail
                 </div>
                 <button onClick={this.showAlert}
-                        disabled={!(
-                            this.state.firstName &&
-                            this.state.lastName &&
-                            this.state.enquiry &&
-                            this.state.country &&
-                            this.state.contactOptions.length
-                        )}>Submit</button>
+                    disabled={!(
+                        this.state.firstName &&
+                        this.state.lastName &&
+                        this.state.enquiry &&
+                        this.state.country &&
+                        this.state.contactOptions.length
+                    )}>Submit</button>
             </React.Fragment>
         )
     }
