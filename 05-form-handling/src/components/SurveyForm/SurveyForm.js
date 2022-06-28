@@ -15,25 +15,25 @@ export default class SurveyForm extends React.Component {
     }
 
     updateFruits = (event) => {
-        let currentFruits = this.state[event.target.name]
-        let modifiedFruits = currentFruits
+        let fruitsCopy = this.state[event.target.name]
 
-        if (!currentFruits.includes(event.target.value)) {
-            modifiedFruits.push(event.target.value)
+        if (!this.state[event.target.name].includes(event.target.value)) {
+            fruitsCopy = [...this.state[event.target.name], event.target.value]
         } else {
-            modifiedFruits = currentFruits.filter((fruit) => {
+            fruitsCopy = this.state[event.target.name].filter((fruit) => {
                 return fruit !== event.target.value
             })
         }
 
         this.setState({
-            [event.target.name]: modifiedFruits
+            [event.target.name]: fruitsCopy
         })
     }
 
     render() {
         return (
             <React.Fragment>
+                <h1>Survey Form</h1>
                 <div>
                     <label>Name: </label>
                     <input name="name" type="text" value={this.state.name} onChange={this.updateFormField} />

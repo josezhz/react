@@ -29,6 +29,17 @@ export default class ContactUsForm extends React.Component {
         })
     }
 
+    showAlert = () => {
+        let alertMessage = `
+            first name: ${this.state.firstName}
+            last name: ${this.state.lastName}
+            enquiry: ${this.state.enquiry}
+            country: ${this.state.country}
+            contact options: ${this.state.contactOptions}
+        `
+        alert(alertMessage)
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -56,23 +67,30 @@ export default class ContactUsForm extends React.Component {
                 </div>
                 <div>
                     <label>Contact Options: </label>
-                    <input name="contactOptions" 
-                           type="checkbox" 
-                           value="email" 
-                           checked={this.state.contactOptions.includes('email')}
-                           onChange={this.updateContactOptions} />Email
-                    <input name="contactOptions" 
-                           type="checkbox" 
-                           value="phoneNumber" 
-                           checked={this.state.contactOptions.includes('phoneNumber')}
-                           onChange={this.updateContactOptions} />Phone Number
-                    <input name="contactOptions" 
-                           type="checkbox" 
-                           value="slowMail" 
-                           checked={this.state.contactOptions.includes('slowMail')}
-                           onChange={this.updateContactOptions} />Slow Mail
+                    <input name="contactOptions"
+                        type="checkbox"
+                        value="email"
+                        checked={this.state.contactOptions.includes('email')}
+                        onChange={this.updateContactOptions} />Email
+                    <input name="contactOptions"
+                        type="checkbox"
+                        value="phoneNumber"
+                        checked={this.state.contactOptions.includes('phoneNumber')}
+                        onChange={this.updateContactOptions} />Phone Number
+                    <input name="contactOptions"
+                        type="checkbox"
+                        value="slowMail"
+                        checked={this.state.contactOptions.includes('slowMail')}
+                        onChange={this.updateContactOptions} />Slow Mail
                 </div>
-                <button>Submit</button>
+                <button onClick={this.showAlert}
+                        disabled={!(
+                            this.state.firstName &&
+                            this.state.lastName &&
+                            this.state.enquiry &&
+                            this.state.country &&
+                            this.state.contactOptions.length
+                        )}>Submit</button>
             </React.Fragment>
         )
     }
