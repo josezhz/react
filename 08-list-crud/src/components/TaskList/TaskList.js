@@ -31,7 +31,8 @@ export default class TaskList extends React.Component {
 
     AddNewTask = e => {
         let newTaskObject = {
-            id: this.state.tasks[this.state.tasks.length - 1].id + 1,
+            // id: this.state.tasks !== [] ? this.state.tasks[this.state.tasks.length - 1].id + 1 : 1,
+            id: Math.floor(Math.random()*1000000),
             description: this.state.newTask,
             done: false
         }
@@ -56,24 +57,34 @@ export default class TaskList extends React.Component {
         })
     }
 
+    DeleteTask = task => {
+        let indexToDelete = this.state.tasks.findIndex(t => t.id === task.id)
+        this.setState({
+            tasks: [
+                ...this.state.tasks.slice(0, indexToDelete),
+                ...this.state.tasks.slice(indexToDelete + 1)
+            ]
+        })
+    }
+
     render() {
         return <React.Fragment>
             <h1>Todo List</h1>
-            <ul className="list-group list-group-flush">
-                {this.state.tasks.map(t => (
-                    <li className="list-group-item d-flex">
-                        <h5>{t.description}</h5>
-                        <input className="form-check-input ms-1" type="checkbox" checked={t.done} onChange={() => { this.UpdateTaskDone(t) }} />
-                        <button className="btn btn-primary btn-sm ms-1">Edit</button>
-                        <button className="btn btn-danger btn-sm ms-1">Delete</button>
-                    </li>
-                ))}
-            </ul>
-            <hr className="m-0 p-1 text-success" />
+            {this.state.tasks.map(t => (
+                <div className="input-group d-flex mb-3" key={t.id}>
+                    <div className="input-group-text">
+                        <input className="form-check-input mt-0" type="checkbox" checked={t.done} onChange={() => { this.UpdateTaskDone(t) }} />
+                    </div>
+                    <div className="form-control rounded-0">{t.description}</div>
+                    <button className="btn btn-outline-primary">Edit</button>
+                    <button className="btn btn-outline-danger" onClick={() => { this.DeleteTask(t) }}>Delete</button>
+                </div>
+            ))}
+            <hr className="m-0" />
             <h1>Add New Task</h1>
             <div className="input-group mb-3">
                 <input type="text" className="form-control" onInput={this.UpdateNewTask} />
-                <button class="btn btn-success" type="button" onClick={this.AddNewTask}>Add</button>
+                <button className="btn btn-outline-success" type="button" onClick={this.AddNewTask}>Add</button>
             </div>
         </React.Fragment>
     }
