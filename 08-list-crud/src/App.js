@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 function App() {
   return (
-    <div className='container mt-3 border border-5 rounded'>
+    <div className='container mt-5 border border-5 rounded'>
       <TaskList />
     </div>
   );

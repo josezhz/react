@@ -20,32 +20,34 @@ export default class TaskList extends React.Component {
                 done: false
             }
         ],
-        newTask: null
+        newTask: '',
+        taskBeingEdited: null,
+        modifiedTaskDescription: '',
     }
 
-    UpdateNewTask = e => {
+    updateNewTask = e => {
         this.setState({
             newTask: e.target.value
         })
     }
 
-    AddNewTask = e => {
+    addNewTask = e => {
         let newTaskObject = {
-            // id: this.state.tasks !== [] ? this.state.tasks[this.state.tasks.length - 1].id + 1 : 1,
-            id: Math.floor(Math.random()*1000000),
+            id: this.state.tasks.length === 0 ? 1 : this.state.tasks[this.state.tasks.length - 1].id + 1,
             description: this.state.newTask,
             done: false
         }
         if (this.state.newTask) {
             this.setState({
-                tasks: [...this.state.tasks, newTaskObject]
+                tasks: [...this.state.tasks, newTaskObject],
+                newTask: ''
             })
         } else {
             alert("Cannot add an empty task")
         }
     }
 
-    UpdateTaskDone = task => {
+    updateTaskDone = task => {
         let taskCopy = { ...task, done: !task.done }
         let indexToReplace = this.state.tasks.findIndex(t => t.id === task.id)
         this.setState({
@@ -57,7 +59,30 @@ export default class TaskList extends React.Component {
         })
     }
 
-    DeleteTask = task => {
+    beginEditTask = task => {
+        this.setState({
+            taskBeingEdited: task,
+            modifiedTaskDescription: task.description
+        })
+    }
+
+    updateTask = () => {
+        let modifiedTask = {
+            ...this.state.taskBeingEdited,
+            description: this.state.modifiedTaskDescription
+        }
+        let indexToUpdate = this.state.tasks.findIndex(t => t.id === modifiedTask.id)
+        this.setState({
+            tasks: [
+                ...this.state.tasks.slice(0, indexToUpdate),
+                modifiedTask,
+                ...this.state.tasks.slice(indexToUpdate + 1)
+            ],
+            taskBeingEdited: null
+        })
+    }
+
+    deleteTask = task => {
         let indexToDelete = this.state.tasks.findIndex(t => t.id === task.id)
         this.setState({
             tasks: [
@@ -67,24 +92,52 @@ export default class TaskList extends React.Component {
         })
     }
 
+    displayTask = task => {
+        return (
+            <div className="input-group d-flex mb-3" key={task.id}>
+                <div className="input-group-text">
+                    <input className="form-check-input mt-0" type="checkbox" checked={task.done} onChange={() => { this.updateTaskDone(task) }} />
+                </div>
+                <div className="form-control">{task.description}</div>
+                <button className="btn btn-outline-primary" onClick={() => { this.beginEditTask(task) }}>Edit</button>
+                <button className="btn btn-outline-danger" onClick={() => { this.deleteTask(task) }}>Delete</button>
+            </div>
+        )
+    }
+    displayEditTask = task => {
+        return (
+            <div className="input-group d-flex mb-3" key={task.id}>
+                <input
+                    type="text"
+                    class="form-control"
+                    value={this.state.modifiedTaskDescription}
+                    onInput={e => {
+                        this.setState({
+                            modifiedTaskDescription: e.target.value
+                        })
+                    }} />
+                <button className="btn btn-outline-warning" onClick={this.updateTask}>Update</button>
+            </div>
+        )
+    }
+
     render() {
         return <React.Fragment>
             <h1>Todo List</h1>
-            {this.state.tasks.map(t => (
-                <div className="input-group d-flex mb-3" key={t.id}>
-                    <div className="input-group-text">
-                        <input className="form-check-input mt-0" type="checkbox" checked={t.done} onChange={() => { this.UpdateTaskDone(t) }} />
-                    </div>
-                    <div className="form-control rounded-0">{t.description}</div>
-                    <button className="btn btn-outline-primary">Edit</button>
-                    <button className="btn btn-outline-danger" onClick={() => { this.DeleteTask(t) }}>Delete</button>
-                </div>
+            {this.state.tasks.map(t => (<React.Fragment>
+                {
+                    this.state.taskBeingEdited === null || this.state.taskBeingEdited.id !== t.id ?
+                        this.displayTask(t)
+                        :
+                        this.displayEditTask(t)
+                }
+            </React.Fragment>
             ))}
             <hr className="m-0" />
             <h1>Add New Task</h1>
             <div className="input-group mb-3">
-                <input type="text" className="form-control" onInput={this.UpdateNewTask} />
-                <button className="btn btn-outline-success" type="button" onClick={this.AddNewTask}>Add</button>
+                <input type="text" className="form-control" onInput={this.updateNewTask} value={this.state.newTask} />
+                <button className="btn btn-outline-success" type="button" onClick={this.addNewTask}>Add</button>
             </div>
         </React.Fragment>
     }
