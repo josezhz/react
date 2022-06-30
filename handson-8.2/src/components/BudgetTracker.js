@@ -33,7 +33,11 @@ export default class BudgetTracker extends React.Component {
         newDescription: '',
         newCategory: 'transport',
         newAmount: '',
-        expenseBeingEdited: null
+        expenseBeingEdited: null,
+        modifiedDate: '',
+        modifiedDescription: '',
+        modifiedCategory: '',
+        modifiedAmount: ''
     }
 
     allCategories = [
@@ -69,6 +73,16 @@ export default class BudgetTracker extends React.Component {
         })
     }
 
+    updateExpenseReconciled = (expense, index) => {
+        this.setState({
+            expenses: [
+                ...this.state.expenses.slice(0, index),
+                {...this.state.expenses[index], reconciled: !this.state.expenses[index].reconciled},
+                ...this.state.expenses.slice(index + 1)
+            ]
+        })
+    }
+
     addExpense = () => {
         let newExpense = {
             _id: this.state.expenses.length === 0 ? 1 : this.state.expenses[this.state.expenses.length - 1]._id + 1,
@@ -83,38 +97,110 @@ export default class BudgetTracker extends React.Component {
         })
     }
 
+    beginEditExpense = expense => {
+        this.setState({
+            expenseBeingEdited: expense,
+            modifiedDate: expense.date,
+            modifiedDescription: expense.description,
+            modifiedCategory: expense.category,
+            modifiedAmount: expense.amount
+        })
+    }
+
+    updateExpense = index => {
+        let modifiedExpense = {
+            _id: this.state.expenseBeingEdited._id,
+            date: this.state.modifiedDate,
+            description: this.state.modifiedDescription,
+            category: this.state.modifiedCategory,
+            amount: this.state.modifiedAmount,
+            reconciled: false
+        }
+        this.setState({
+            expenses: [
+                ...this.state.expenses.slice(0, index),
+                modifiedExpense,
+                ...this.state.expenses.slice(index + 1)
+            ],
+            expenseBeingEdited: null
+        })
+    }
+
+    deleteExpense = index => {
+        this.setState({
+            expenses: [
+                ...this.state.expenses.slice(0, index),
+                ...this.state.expenses.slice(index + 1)
+            ]
+        })
+    }
+
+    renderExpense = (expense, index) => (
+        <div className='mb-3'>
+            <div className='input-group'>
+                <div className='input-group-text'>
+                    <input className='form-check-input mt-0' type="checkbox" onChange={() => { this.updateExpenseReconciled(expense, index) }} checked={expense.reconciled} />
+                </div>
+                <div className='form-control fs-5'>{expense.description}</div>
+            </div>
+            <div className='input-group'>
+                <span className='input-group-text'>Date: </span>
+                <div className='form-control'>{expense.date}</div>
+            </div>
+            <div className='input-group'>
+                <span className='input-group-text'>Category: </span>
+                <div className='form-control'>{expense.category}</div>
+            </div>
+            <div className='input-group'>
+                <span className='input-group-text'>Amount: </span>
+                <div className='form-control'>{expense.amount}</div>
+                <span className='input-group-text'>&cent;</span>
+            </div>
+            <div className='input-group'>
+                <button className='btn btn-primary w-50' onClick={() => { this.beginEditExpense(expense) }}>Edit</button>
+                <button className='btn btn-danger w-50' onClick={() => { this.deleteExpense(index) }}>Delete</button>
+            </div>
+        </div>
+    )
+
+    renderEditExpense = (expense, index) => (
+        <div className='mb-3'>
+            <div className='input-group'>
+                <span className='input-group-text fs-5'>Description: </span>
+                <input type='text' className='form-control fs-5' name='modifiedDescription' onChange={this.updateFormField} value={this.state.modifiedDescription} />
+            </div>
+            <div className='input-group'>
+                <span className='input-group-text'>Date: </span>
+                <input type='text' className='form-control' name='modifiedDate' onChange={this.updateFormField} value={this.state.modifiedDate} />
+            </div>
+            <div className='input-group'>
+                <span className='input-group-text'>Category: </span>
+                <select className='form-select' name='modifiedCategory' onChange={this.updateFormField} value={this.state.modifiedCategory}>
+                    {this.allCategories.map(c => <option value={c.value}>{c.display}</option>)}
+                </select>
+            </div>
+            <div className='input-group'>
+                <span className='input-group-text'>Amount: </span>
+                <input type='number' className='form-control' name='modifiedAmount' onChange={this.updateFormField} value={this.state.modifiedAmount} />
+                <span className='input-group-text'>&cent;</span>
+            </div>
+            <div className='input-group'>
+                <button className='btn btn-warning w-100' onClick={() => { this.updateExpense(index) }}>Update</button>
+            </div>
+        </div>
+    )
+
     render() {
         return (
             <React.Fragment>
                 <h1 className='text-center'>Budget Tracker</h1>
                 <div className='container border border-5 pt-3'>
-                    {this.state.expenses.map(expense => (
-                        <div className='mb-3'>
-                            <div className='input-group'>
-                                <div className='input-group-text'>
-                                    <input className='form-check-input mt-0' type="checkbox" />
-                                </div>
-                                <div className='form-control fs-5'>{expense.description}</div>
-                            </div>
-                            <div className='input-group'>
-                                <span className='input-group-text'>Date: </span>
-                                <div className='form-control'>{expense.date}</div>
-                            </div>
-                            <div className='input-group'>
-                                <span className='input-group-text'>Category: </span>
-                                <div className='form-control'>{expense.category}</div>
-                            </div>
-                            <div className='input-group'>
-                                <span className='input-group-text'>Amount: </span>
-                                <div className='form-control'>{expense.amount}</div>
-                                <span className='input-group-text'>&cent;</span>
-                            </div>
-                            <div className='input-group'>
-                                <button className='btn btn-primary w-50'>Edit</button>
-                                <button className='btn btn-danger w-50'>Delete</button>
-                            </div>
-                        </div>
-                    ))}
+                    {this.state.expenses.map((expense, index) =>
+                        !this.state.expenseBeingEdited || this.state.expenseBeingEdited._id !== expense._id ?
+                            this.renderExpense(expense, index)
+                            :
+                            this.renderEditExpense(expense, index)
+                    )}
                 </div>
                 <h1 className='text-center'>Add New Expense</h1>
                 <div className='container border border-5 pt-3 pb-3 mb-5'>
