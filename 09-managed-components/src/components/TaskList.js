@@ -1,4 +1,6 @@
 import React from "react";
+import Task from "./Task";
+import AddNewTask from "./AddNewTask";
 // import axios from 'axios';
 
 export default class TaskList extends React.Component {
@@ -123,22 +125,19 @@ export default class TaskList extends React.Component {
 
     render() {
         return <React.Fragment>
-            <h1>Todo List</h1>
-            {this.state.tasks.map(t => (<React.Fragment>
-                {
-                    this.state.taskBeingEdited === null || this.state.taskBeingEdited.id !== t.id ?
-                        this.displayTask(t)
-                        :
-                        this.displayEditTask(t)
-                }
-            </React.Fragment>
-            ))}
+            <h1>Task List</h1>
+            <Task
+                tasks={this.state.tasks}
+                taskBeingEdited={this.state.taskBeingEdited}
+                displayTask={this.displayTask}
+                displayEditTask={this.displayEditTask}
+            />
             <hr className="m-0" />
-            <h1>Add New Task</h1>
-            <div className="input-group mb-3">
-                <input type="text" className="form-control" onInput={this.updateNewTask} value={this.state.newTask} />
-                <button className="btn btn-outline-success" type="button" onClick={this.addNewTask}>Add</button>
-            </div>
+            <AddNewTask
+                newTask={this.state.newTask}
+                updateNewTask={this.updateNewTask}
+                addNewTask={this.addNewTask}
+            />
         </React.Fragment>
     }
 }

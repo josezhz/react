@@ -1,5 +1,5 @@
 import React from 'react';
-import TaskList from './components/TaskList/TaskList';
+import TaskList from './components/TaskList';
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 function App() {

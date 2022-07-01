@@ -153,8 +153,8 @@ export default class BudgetTracker extends React.Component {
             </div>
             <div className='input-group'>
                 <span className='input-group-text'>Amount: </span>
-                <div className='form-control'>{expense.amount}</div>
-                <span className='input-group-text'>&cent;</span>
+                <span className='form-control pe-1' style={{maxWidth: 'fit-content'}}>&cent;</span>
+                <div className='form-control ps-0 border-start-0'>{expense.amount}</div>
             </div>
             <div className='input-group'>
                 <button className='btn btn-primary w-50' onClick={() => { this.beginEditExpense(expense) }}>Edit</button>
@@ -181,8 +181,8 @@ export default class BudgetTracker extends React.Component {
             </div>
             <div className='input-group'>
                 <span className='input-group-text'>Amount: </span>
-                <input type='number' className='form-control' name='modifiedAmount' onChange={this.updateFormField} value={this.state.modifiedAmount} />
-                <span className='input-group-text'>&cent;</span>
+                <span className='form-control pe-1' style={{maxWidth: 'fit-content'}}>&cent;</span>
+                <input type='number' className='form-control ps-0 border-start-0' name='modifiedAmount' onChange={this.updateFormField} value={this.state.modifiedAmount} />
             </div>
             <div className='input-group'>
                 <button className='btn btn-warning w-100' onClick={() => { this.updateExpense(index) }}>Update</button>
@@ -220,8 +220,8 @@ export default class BudgetTracker extends React.Component {
                     </div>
                     <div className='input-group'>
                         <span className='input-group-text'>Amount: </span>
-                        <input type='number' className='form-control' name='newAmount' onChange={this.updateFormField} value={this.state.newAmount} />
-                        <span className='input-group-text'>&cent;</span>
+                        <span className='form-control pe-1' style={{maxWidth: 'fit-content'}}>&cent;</span>
+                        <input type='number' className='form-control ps-0 border-start-0' name='newAmount' onChange={this.updateFormField} value={this.state.newAmount} />
                     </div>
                     <div className='input-group'>
                         <button className='btn btn-success w-100' onClick={this.addExpense}>Add</button>
