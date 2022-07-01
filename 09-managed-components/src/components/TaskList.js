@@ -25,6 +25,7 @@ export default class TaskList extends React.Component {
         newTask: '',
         taskBeingEdited: null,
         modifiedTaskDescription: '',
+        taskToDelete: null
     }
 
     updateNewTask = e => {
@@ -84,6 +85,18 @@ export default class TaskList extends React.Component {
         })
     }
 
+    updateTaskToDelete = task => {
+        this.setState({
+            taskToDelete: task
+        })
+    }
+
+    cancelDeleteTask = task => {
+        this.setState({
+            taskToDelete: null
+        })
+    }
+
     deleteTask = task => {
         let indexToDelete = this.state.tasks.findIndex(t => t.id === task.id)
         this.setState({
@@ -96,14 +109,29 @@ export default class TaskList extends React.Component {
 
     displayTask = task => {
         return (
-            <div className="input-group d-flex mb-3" key={task.id}>
-                <div className="input-group-text">
-                    <input className="form-check-input mt-0" type="checkbox" checked={task.done} onChange={() => { this.updateTaskDone(task) }} />
+            <React.Fragment key={task.id}>
+                <div className={this.state.taskToDelete !== null && this.state.taskToDelete.id === task.id ? ("input-group d-flex mb-1"):("input-group d-flex mb-3")}>
+                    <div className="input-group-text">
+                        <input className="form-check-input mt-0" type="checkbox" checked={task.done} onChange={() => { this.updateTaskDone(task) }} />
+                    </div>
+                    <div className="form-control">{task.description}</div>
+                    <button className="btn btn-outline-primary" onClick={() => { this.beginEditTask(task) }}>Edit</button>
+                    <button className="btn btn-outline-danger" onClick={() => { this.updateTaskToDelete(task) }}>Delete</button>
                 </div>
-                <div className="form-control">{task.description}</div>
-                <button className="btn btn-outline-primary" onClick={() => { this.beginEditTask(task) }}>Edit</button>
-                <button className="btn btn-outline-danger" onClick={() => { this.deleteTask(task) }}>Delete</button>
-            </div>
+                {
+                    this.state.taskToDelete !== null && this.state.taskToDelete.id === task.id ?
+                        (
+                            <div className="input-group input-group-lg d-flex mb-3">
+                                <div className="form-control alert-danger">Are you sure you want to delete "{task.description}"?</div>
+                                <button className="btn btn-secondary" onClick={() => { this.cancelDeleteTask(task) }}>Cancel</button>
+                                <button className="btn btn-danger" onClick={() => { this.deleteTask(task) }}>Confirm</button>
+                            </div>
+                        )
+                        :
+                        (null)
+                }
+            </React.Fragment>
+
         )
     }
     displayEditTask = task => {
